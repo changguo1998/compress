@@ -37,6 +37,9 @@ int Huffman::FlagFull(int flag[]){
 }
 
 void Huffman::CCreateTree(void){
+/*
+ *  This function will be called while the user want to created a compressed file.
+ */
     using namespace Huffman;
     using namespace Global;
     int flag[TREE_NODE_NUM];
@@ -82,11 +85,22 @@ void Huffman::DCreateTree(void){
     CodedFile.read(HF,8*TREE_NODE_NUM*sizeof(HuffmanNode));
     return;
 }
+
 int Huffman::HCode(int *code,Global::sourcetype source){
-    int i;
+    int i,j;
+    int stack_point;
+    while(1){
+        //pass
+    }
 }
+
 int Huffman::HDecode(Global::buffertype buffer,Global::sourcetype &S){
 /*
- *   This function
+ *   This function is used to decode the compressed file.
+ *   Arguments:
+ *   	buffer--coded bits
+ *   	S--used to return the source value
+ *   Return:
+ *   	return the number of the bits that is still undecoded in the buffer because the function only decode one password every time it is called.
  */
 }
