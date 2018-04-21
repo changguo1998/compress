@@ -10,6 +10,7 @@ namespace Huffman{
     int DCreateTree(void);
     int HCode(int *code,Global::sourcetype source);
     int HDecode(Global::buffertype buffer,Global::sourcetype &S);
+    int FlagFull(int flag[]);
 }
 
 
