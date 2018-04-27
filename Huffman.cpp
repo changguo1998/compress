@@ -1,13 +1,13 @@
 #include <iostream>
 #include <fstream>
-#include "Global.h"
-#include "Huffman.h"
+#include "./Global.h"
+#include "./Huffman.h"
 using namespace std;
 int Huffman::InitTree(void){
 /*
  *initial the huffman tree
  */
-    using namespace Global;
+    //using namespace Global;
     int i;
     for(i=0; i<CODE_TYPE_NUM; i++){
         HT[i].lchild = HT[i].rchild = HT[i].parent = -1;
@@ -15,13 +15,13 @@ int Huffman::InitTree(void){
         HT[i].content = sourcetype(i);
     }
     TreeRoot = i-1;
-    return Global::Ok;
+    return Ok;
 }
 
 int Huffman::DestroyTree(void){
-    Global::TreeRoot = -1;
-    Global::TreeRoot = -1;
-    return Global::Ok;
+    TreeRoot = -1;
+    TreeRoot = -1;
+    return Ok;
 }
 
 int Huffman::FlagFull(int flag[]){
@@ -29,7 +29,7 @@ int Huffman::FlagFull(int flag[]){
  *  return the number of the node which didn't have parents
  */
     int i,count;
-    for(i=0,count=0; i<=Global::TreeRoot; i++){
+    for(i=0,count=0; i<=TreeRoot; i++){
 	if(flag[i]==0)
 	    count += 1;
     }
@@ -41,7 +41,6 @@ void Huffman::CCreateTree(void){
  *  This function will be called while the user want to created a compressed file.
  */
     using namespace Huffman;
-    using namespace Global;
     int flag[TREE_NODE_NUM];
     for(int i=0; i<TREE_NODE_NUM; i++)
 	flag[i]=0;
@@ -84,11 +83,11 @@ void Huffman::DCreateTree(void){
 	return;
     CodedFile.seekg(ios::beg);//moving the pointer to the head of the file:CodedFile
     CodedFile.read(TreeRoot,sizeof(TreeRoot));
-    CodedFile.read(HF,TREE_NODE_NUM*sizeof(HuffmanNode));
+    CodedFile.read(HT,TREE_NODE_NUM*sizeof(HuffmanNode));
     return;
 }
 
-int Huffman::HCode(int *code,Global::sourcetype source){
+int Huffman::HCode(int *code,sourcetype source){
     using namespace Global;
     int i,j;
     int path[TREE_NODE_NUM],code_loc;
@@ -102,17 +101,18 @@ int Huffman::HCode(int *code,Global::sourcetype source){
         i += 1;
     }
     if(path[i]!=TreeRoot)
-        return Global::Calcu_Error;
+        return Calcu_Error;
     for(j=0; i>0; i--,j++){
         if(path[i-1]==HT[path[i]].lchild)
             code[j] = 0;
         else if(path[i-1]==HT[path[i]].rchild)
             code[j] = 1;
     }
+    code[j] = -1;
     return Ok;
 }
 
-int Huffman::HDecode(Global::buffertype buffer,Global::sourcetype &S){
+//int Huffman::HDecode(Global::buffertype buffer,Global::sourcetype &S){
 /*
  *   This function is used to decode the compressed file.
  *   Arguments:

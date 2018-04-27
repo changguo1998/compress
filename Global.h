@@ -1,28 +1,25 @@
 #ifndef GLOBAL_HPP_INCLUDED
 #define GLOBAL_HPP_INCLUDED
-
+#include <iostream>
 #include <fstream>
+#include "Huffman.h"
     typedef char sourcetype;
     typedef char codetype;
     typedef char buffertype;
 
-namespace Global{
-    extern const int BYTE_NUM = sizeof(sourcetype);
-    extern const int BIT_NUM = 8*BYTE_NUM;
-    extern const int CODE_TYPE_NUM = 256;
-    extern const int TREE_NODE_NUM = 2*CODE_TYPE_NUM;
-
-    extern const enum status{Ok,File_Not_Ready,Calcu_Error}
-
-    typedef struct{
+//namespace Global{
+    struct HuffmanNode{
         sourcetype content;
         int parent,lchild,rchild;
         double weight;
-    } HuffmanNode;
+    };
+    const int BYTE_NUM = sizeof(sourcetype);
+    const int BIT_NUM = 8*BYTE_NUM;
+    const int CODE_TYPE_NUM = 256;
+    const int TREE_NODE_NUM = 2*CODE_TYPE_NUM;
 
-    extern HuffmanNode HT[TREE_NODE_NUM];
-    extern int TreeRoot=-1;
-extern ifstream SourceFile;
-extern ofstream CodedFile;
-}//namespace
+    const enum status{Ok,File_Not_Ready,Calcu_Error}
+
+
+//}//namespace
 #endif // GLOBAL_HPP_INCLUDED

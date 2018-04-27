@@ -1,9 +1,14 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "Global.h"
-#include "Huffman.h"
-#include "code&decode.h"
+#include "./Global.h"
+#include "./Huffman.h"
+#include "./codedecode.h"
+
+extern HuffmanNode HT[TREE_NODE_NUM];
+extern int TreeRoot=-1;
+extern ifstream SourceFile;
+extern ofstream CodedFile;
 using namespace std;
 
 int main(void){
@@ -30,7 +35,7 @@ int main(void){
         cout << "Input source file:";
         cin >> InFile;
         Global::CodedFile.open(InFile,ios::in|ios::binary);
-        OutFile = InFile + ".gccp";
+        OutFile = "decode_" + InFile;
         Global::SourceFile.open(OutFile,ios::out|ios::binary);
         Code::Decoding();
 

@@ -2,7 +2,7 @@
 #include <fstream>
 #include "Global.h"
 #include "Huffman.h"
-#include "code&decode.h"
+#include "codedecode.h"
 using namespace std;
 int Code::Coding(void){
 /*
@@ -10,7 +10,6 @@ int Code::Coding(void){
  *  This is like an "main" function for all functions abort conpress
  */
     using namespace Huffman;
-    using namespace Global;
     if( !(SourceFile.is_open()&&CodedFile.is_open()) )
         return File_Not_Ready;
     InitTree();
@@ -24,8 +23,8 @@ int Code::Coding(void){
     CodedFile.write(HT,TREE_NODE_NUM*sizeof(HuffmanNode));
     sourcetype source;
     buffertype buff;//buf_low,buf_high;
-    int buf_bit=0;
-    while(SourceFile.eof()){
+    int buf_bit=0,i;
+    while(!SourceFile.eof()){
         SourceFile.read(source,sizeof(source));
         HCode(code,source);//coding and storing in the array code;
         for(i=0;code[i]!=Code_End;i++){
@@ -40,15 +39,20 @@ int Code::Coding(void){
 		buf_bit += 1;
 	    }//else if
 	    //write to file
-	    if(buf_bit==sizeof(buff)){
+	    if(buf_bit==8*sizeof(buff)){
 		CodedFIle.write(buff,sizeof(buff));
 		buf_bit = 0;
 	    }//write to file
 	}//for
     }//while
     //deal with the rest bit in buff
+    //CodedFile.write(buff,sizeof(buff));
+    //CodedFile.write(buf_bit,sizeof(buf_bit));
+    while(buf_bit!=sizeof(buff)){
+        buff << 1;
+        buf_bit ++;
+    }
     CodedFile.write(buff,sizeof(buff));
-    CodedFile.write(buf_bit,sizeof(buf_bit));
     return Ok;
 }
 int Code::Statictic(void){
@@ -56,15 +60,47 @@ int Code::Statictic(void){
     int i;
     while(file.eof()){
         file.read(chbuf,sizeof(chbuf));
-	for(i=0; i<=Global::TreeRoot; i++){
+	for(i=0; i<=TreeRoot; i++){
 	    if(chbuf == HT[i]){
 		HT[i].weight += 1.0;
 		break;
 	    }//if
 	}//for
     }//while
-    return Global::Ok;
+    return Ok;
 }
 int Code::Decoding(void){
+/*
+ *
+ *
+ */
+    using namespace Huffman;
+    if( !(SourceFile.is_open()&&CodedFile.is_open()) )
+        return File_Not_Ready;
+    InitTree();
+    CodedFile.seekg(ios::beg);
+    Huffman::DCreateTree();
+    buffertype buff;
+    sourcetype decompress;
+    int rest_bit,decom_loc;
+    rest_bit = 0;
+    decom_loc = TreeRoot;
+    while(!CodedFile.eof()||rest_bit>0){
+        if(rest_bit==0){
+            CodedFile.read(buff,sizeof(buff));
+            rest_bit = 8*sizeof(buff);
+        }
+        if((buff & 0x80) == 0x80)
+            decom_loc = HT[decom_loc].rchild;
+        else if((buff & 0x80) == 0x00)
+            decom_loc = HT[decom_loc].lchild;
 
+        if(HT[decom_loc].lchild == -1){
+            decompress = HT[decom_loc].content;
+            SourceFile.write(decompress,sizeof(decompress));
+            buff << 1;
+            rest_bit -= 1;
+        }
+    }//while
+    return Ok;
 }
