@@ -12,7 +12,7 @@ namespace Global{
     extern const int CODE_TYPE_NUM = 256;
     extern const int TREE_NODE_NUM = 2*CODE_TYPE_NUM;
 
-    extern const enum status{Ok,File_Not_Ready}
+    extern const enum status{Ok,File_Not_Ready,Calcu_Error}
 
     typedef struct{
         sourcetype content;

@@ -2,7 +2,7 @@
 #include <fstream>
 #include "Global.h"
 #include "Huffman.h"
-
+using namespace std;
 int Huffman::InitTree(void){
 /*
  *initial the huffman tree
@@ -26,7 +26,7 @@ int Huffman::DestroyTree(void){
 
 int Huffman::FlagFull(int flag[]){
 /*
- *  return the number of the node which didn't have parents 
+ *  return the number of the node which didn't have parents
  */
     int i,count;
     for(i=0,count=0; i<=Global::TreeRoot; i++){
@@ -58,7 +58,7 @@ void Huffman::CCreateTree(void){
 		else if(HT[i].weight<w2){
 		    w2 = HT[i].weight;
 		    min2 = i;
-		}//if w1<=weight<w2 
+		}//if w1<=weight<w2
 	    }//if flag==0
 	}//for
 	TreeRoot += 1;
@@ -79,19 +79,37 @@ void Huffman::DCreateTree(void){
  *  are used to store the Huffman tree
  *
  */
+    using namespace Global;
     if(!CodedFile.is_open())
 	return;
-    CodedFile.//moving the pointer to the head of the file:CodedFile
-    CodedFile.read(HF,8*TREE_NODE_NUM*sizeof(HuffmanNode));
+    CodedFile.seekg(ios::beg);//moving the pointer to the head of the file:CodedFile
+    CodedFile.read(TreeRoot,sizeof(TreeRoot));
+    CodedFile.read(HF,TREE_NODE_NUM*sizeof(HuffmanNode));
     return;
 }
 
 int Huffman::HCode(int *code,Global::sourcetype source){
+    using namespace Global;
     int i,j;
-    int stack_point;
-    while(1){
-        //pass
+    int path[TREE_NODE_NUM],code_loc;
+    for(code_loc=0; code_loc<CODE_TYPE_NUM; code_loc++)//find the location of the node
+        if(HT[code_loc].content==source)
+            break;
+    path[0] = code_loc;
+    i=0;
+    while(HT[path[i]].parent!= -1){
+        path[i+1] = HT[path[i]].parent;
+        i += 1;
     }
+    if(path[i]!=TreeRoot)
+        return Global::Calcu_Error;
+    for(j=0; i>0; i--,j++){
+        if(path[i-1]==HT[path[i]].lchild)
+            code[j] = 0;
+        else if(path[i-1]==HT[path[i]].rchild)
+            code[j] = 1;
+    }
+    return Ok;
 }
 
 int Huffman::HDecode(Global::buffertype buffer,Global::sourcetype &S){

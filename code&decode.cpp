@@ -26,7 +26,7 @@ int Code::Coding(void){
     buffertype buff;//buf_low,buf_high;
     int buf_bit=0;
     while(SourceFile.eof()){
-        SourceFile.read(source,sizeof(source)); 
+        SourceFile.read(source,sizeof(source));
         HCode(code,source);//coding and storing in the array code;
         for(i=0;code[i]!=Code_End;i++){
 	    if(code[i] == 1){//transform to bit
@@ -63,5 +63,8 @@ int Code::Statictic(void){
 	    }//if
 	}//for
     }//while
-    return 0;
+    return Global::Ok;
+}
+int Code::Decoding(void){
+
 }

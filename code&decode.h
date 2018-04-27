@@ -8,10 +8,8 @@ namespace Code{
 //code
     int Coding(void);
     int Statistic(void);
-    int HCoding(void);
 
 //decode
     int Decoding(void);
-    int HDecoding(void);
 }
 #endif // COMPRESS_HPP_INCLUDE
