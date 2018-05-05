@@ -4,12 +4,15 @@
 #ifndef COMPRESS_HPP_INCLUDE
 #define COMPRESS_HPP_INCLUDE
 
+#include <string>
+//#include "Global.h"
 //namespace Code{
 //code
-    int Coding(void);//+
-    int Statistic(void);//+
+//using namespace std;
+    void Coding(std::string &InFile,std::string &OutFile,int &TreeRoot,HuffmanNode *HT);//+
+    void Statistic(std::string &InFile,int &TreeRoot,HuffmanNode *HT);//+
 
 //decode
-    int Decoding(void);//-
+    void Decoding(std::string &InFile,std::string &OutFile,int &TreeRoot,HuffmanNode *HT);//+
 //}
 #endif // COMPRESS_HPP_INCLUDE

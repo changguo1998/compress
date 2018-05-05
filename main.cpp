@@ -1,17 +1,20 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "./Global.h"
-#include "./Huffman.h"
-#include "./codedecode.h"
+#include "Global.h"
+#include "Huffman.h"
+#include "codedecode.h"
 
-extern HuffmanNode HT[TREE_NODE_NUM];
-extern int TreeRoot=-1;
-extern ifstream SourceFile;
-extern ofstream CodedFile;
+struct HuffmanNode *HT=NULL;
+int TreeRoot=-1;
+//char InFile,OutFile;
+//ifstream SourceFile;
+//ofstream CodedFile;
 using namespace std;
 
 int main(void){
+//    TreeRoot = -1;
+    HT = new HuffmanNode[TREE_NODE_NUM];
     string InFile,OutFile;
     char ch;
     cout << "compress?[y or n]" <<endl;
@@ -19,13 +22,13 @@ int main(void){
     if(ch == 'y'){
         cout << "Input source file:";
         cin >> InFile;
-        Global::SourceFile.open(InFile,ios::in|ios::binary);
+        //SourceFile.open(InFile,ios::in|ios::binary);
         OutFile = InFile + ".gccp";
-        Global::CodedFile.open(OutFile,ios::out|ios::binary);
-        Code::Coding();
+        //CodedFile.open(OutFile,ios::out|ios::binary);
+        Coding(InFile,OutFile,TreeRoot,HT);
 
-        Global::SourceFile.close();
-        Global::CodedFile.close();
+        //SourceFile.close();
+        //CodedFile.close();
         return 0;
     }
 
@@ -34,13 +37,13 @@ int main(void){
     if(ch=='y'){
         cout << "Input source file:";
         cin >> InFile;
-        Global::CodedFile.open(InFile,ios::in|ios::binary);
+        //CodedFile.open(InFile,ios::in|ios::binary);
         OutFile = "decode_" + InFile;
-        Global::SourceFile.open(OutFile,ios::out|ios::binary);
-        Code::Decoding();
+        //SourceFile.open(OutFile,ios::out|ios::binary);
+        Decoding(InFile,OutFile,TreeRoot,HT);
 
-        Global::SourceFile.close();
-        Global::CodedFile.close();
+        //SourceFile.close();
+        //CodedFile.close();
         return 0;
     }
 

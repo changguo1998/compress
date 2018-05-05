@@ -7,13 +7,13 @@
 #include "Global.h"
 //namespace Huffman{
 
-    int InitTree(void);//+
-    int DestroyTree(void);//+
-    int CCreateTree(void);//+
-    int DCreateTree(void);//+
-    int HCode(int *code,sourcetype source);//+
+    void InitTree(HuffmanNode *HT,int &TreeRoot);//
+    void DestroyTree(int &TreeRoot);//
+    void CCreateTree(HuffmanNode *HT,int &TreeRoot);//
+    void DCreateTree(std::string &InFile,int &TreeRoot,HuffmanNode *HT);//
+    void HCode(int *code,sourcetype source,HuffmanNode *HT,int &TreeRoot);//
     //int HDecode(Global::buffertype buffer,Global::sourcetype &S);//-
-    int FlagFull(int flag[]);//+
+    int FlagFull(int flag[],int TreeRoot);//
 //}
 
 

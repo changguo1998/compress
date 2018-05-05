@@ -1,9 +1,15 @@
 #include <iostream>
 #include <fstream>
-#include "./Global.h"
-#include "./Huffman.h"
+#include <limits>
+#include "Global.h"
+#include "Huffman.h"
+
 using namespace std;
-int Huffman::InitTree(void){
+//extern HuffmanNode HT[TREE_NODE_NUM];
+//extern int TreeRoot;
+//extern ifstream SourceFile;
+//extern ofstream CodedFile;
+void InitTree(HuffmanNode *HT,int &TreeRoot){
 /*
  *initial the huffman tree
  */
@@ -15,16 +21,15 @@ int Huffman::InitTree(void){
         HT[i].content = sourcetype(i);
     }
     TreeRoot = i-1;
-    return Ok;
+    return;
 }
 
-int Huffman::DestroyTree(void){
+void DestroyTree(int &TreeRoot){
     TreeRoot = -1;
-    TreeRoot = -1;
-    return Ok;
+    return;
 }
 
-int Huffman::FlagFull(int flag[]){
+int FlagFull(int flag[],int TreeRoot){
 /*
  *  return the number of the node which didn't have parents
  */
@@ -36,28 +41,28 @@ int Huffman::FlagFull(int flag[]){
     return count;
 }
 
-void Huffman::CCreateTree(void){
+void CCreateTree(HuffmanNode *HT,int &TreeRoot){
 /*
  *  This function will be called while the user want to created a compressed file.
  */
-    using namespace Huffman;
+//    using namespace Huffman;
     int flag[TREE_NODE_NUM];
     for(int i=0; i<TREE_NODE_NUM; i++)
 	flag[i]=0;
 
     int min1,min2,i;
     double w1,w2;
-    while(FlagFull(flag)>1){
-	for(w1=w2=MAX_DOUBLE,i=0; i<=TreeRoot; i++){
+    while(FlagFull(flag,TreeRoot)>1){
+	for(w1=w2=numeric_limits<double>::max(),i=0; i<=TreeRoot; i++){
 	    if(flag[i]==0){
-                if(HT[i].weight<w1){
-		    w1 = HT[i].weight;
-		    min1 = i;
-		}//if weight<w1
-		else if(HT[i].weight<w2){
-		    w2 = HT[i].weight;
-		    min2 = i;
-		}//if w1<=weight<w2
+            if(HT[i].weight<w1){
+                w1 = HT[i].weight;
+                min1 = i;
+            }//if weight<w1
+            else if(HT[i].weight<w2){
+                w2 = HT[i].weight;
+                min2 = i;
+            }//if w1<=weight<w2
 	    }//if flag==0
 	}//for
 	TreeRoot += 1;
@@ -71,24 +76,29 @@ void Huffman::CCreateTree(void){
     return;
 }
 
-void Huffman::DCreateTree(void){
+void DCreateTree(std::string &InFile,int &TreeRoot,HuffmanNode *HT){
 /*
  *  It means that at the beginning of the compressed file,
  *  there are 8*TREE_NODE_NUMBER*sizeof(HuffmanNode) bits which
  *  are used to store the Huffman tree
  *
  */
-    using namespace Global;
-    if(!CodedFile.is_open())
-	return;
+//    using namespace Global;
+//    if(!CodedFile.is_open())
+//	return;
+    ifstream CodedFile;
+    CodedFile.open(InFile,ios::in|ios::binary);
     CodedFile.seekg(ios::beg);//moving the pointer to the head of the file:CodedFile
-    CodedFile.read(TreeRoot,sizeof(TreeRoot));
-    CodedFile.read(HT,TREE_NODE_NUM*sizeof(HuffmanNode));
+    void *t=&TreeRoot;
+    CodedFile.read(static_cast<char *>(t),sizeof(TreeRoot));
+    t = HT;
+    CodedFile.read(static_cast<char *>(t),TREE_NODE_NUM*sizeof(HuffmanNode));
+    CodedFile.close();
     return;
 }
 
-int Huffman::HCode(int *code,sourcetype source){
-    using namespace Global;
+void HCode(int *code,sourcetype source,HuffmanNode *HT,int &TreeRoot){
+//    using namespace Global;
     int i,j;
     int path[TREE_NODE_NUM],code_loc;
     for(code_loc=0; code_loc<CODE_TYPE_NUM; code_loc++)//find the location of the node
@@ -101,7 +111,7 @@ int Huffman::HCode(int *code,sourcetype source){
         i += 1;
     }
     if(path[i]!=TreeRoot)
-        return Calcu_Error;
+        return;
     for(j=0; i>0; i--,j++){
         if(path[i-1]==HT[path[i]].lchild)
             code[j] = 0;
@@ -109,7 +119,7 @@ int Huffman::HCode(int *code,sourcetype source){
             code[j] = 1;
     }
     code[j] = -1;
-    return Ok;
+    return;
 }
 
 //int Huffman::HDecode(Global::buffertype buffer,Global::sourcetype &S){
@@ -121,4 +131,4 @@ int Huffman::HCode(int *code,sourcetype source){
  *   Return:
  *   	return the number of the bits that is still undecoded in the buffer because the function only decode one password every time it is called.
  */
-}
+
