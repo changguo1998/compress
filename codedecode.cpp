@@ -118,9 +118,10 @@ void Decoding(string &InFile,string &OutFile,int &TreeRoot,HuffmanNode *HT){
         if(HT[decom_loc].lchild == -1){
             decompress = HT[decom_loc].content;
             SourceFile.write(static_cast<char *>(&decompress),sizeof(decompress));
+            decom_loc = TreeRoot;
+        }
             buff <<= 1;
             rest_bit -= 1;
-        }
     }//while
     SourceFile.close();
     CodedFile.close();
